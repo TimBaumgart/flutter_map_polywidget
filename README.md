@@ -10,8 +10,16 @@ For general information about developing packages, see the Dart guide for
 and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
+
+# flutter_map_polywidget
+
 `flutter_map_polywidget` is a [flutter_map](https://pub.dev/packages/flutter_map) plugin for
 displaying any widget on the map.
+
+[polywidget.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/6caa4f5c-901b-4415-9411-a26e72e3a638)
+
+Join [flutter_map Discord server](https://discord.gg/egEGeByf4q) to talk
+about `flutter_map_polywidget`, get help and help others in the #plugins channel.
 
 ## Features
 
@@ -22,11 +30,9 @@ displaying any widget on the map.
 - define whether the widget should rotate with the users view, restrict it to one orientation or
   disable it completely
 
-[polywidget.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/6caa4f5c-901b-4415-9411-a26e72e3a638)
-
 ## Getting started
 
-Add flutter_map_location_marker to your pubspec.yaml:
+Add `flutter_map_location_marker` to your `pubspec.yaml`:
 
 ```
 dependencies:
@@ -80,7 +86,7 @@ PolyWidget.threePoints(
 ```
 
 By default, your widget rotates automatically so it lines up with the current rotation of the map.
-To disable that, set `noRotation` to ` true`:
+To disable that, set `noRotation` to `true`:
 
 ```dart 
 PolyWidget(
@@ -90,7 +96,7 @@ PolyWidget(
 ),
 ```
 
-If you want your widget to only rotate to portrait or landscape dimensions, you can do that by
+If you want your widget to only rotate to `portrait` or `landscape` orientation, you can do that by
 defining `forceOrientation`:
 
 ```dart                
