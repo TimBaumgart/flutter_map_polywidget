@@ -22,6 +22,8 @@ displaying any widget on the map.
 - define whether the widget should rotate with the users view, restrict it to one orientation or
   disable it completely
 
+[polywidget.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/6caa4f5c-901b-4415-9411-a26e72e3a638)
+
 ## Getting started
 
 Add flutter_map_location_marker to your pubspec.yaml:
