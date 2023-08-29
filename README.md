@@ -28,11 +28,11 @@ about `flutter_map_polywidget`, get help and help others in the #plugins channel
     - center, width, height and angle
     - two exact and one approximated point
 - define whether the widget should rotate with the users view, restrict it to one orientation or
-  disable it completely
+  disable rotation completely
 
 ## Getting started
 
-Add `flutter_map_location_marker` to your `pubspec.yaml`:
+Add `flutter_map_polywidget` to your `pubspec.yaml`:
 
 ```
 dependencies:
