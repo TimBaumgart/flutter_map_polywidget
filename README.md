@@ -15,7 +15,7 @@ displaying any widget on the map.
 TODO: Put a short description of the package here that helps potential users
 know whether this package might be useful for them.
 
-![](assets/localhost-61571-.webm)
+[polywidget.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/6caa4f5c-901b-4415-9411-a26e72e3a638)
 
 ## Features
 
