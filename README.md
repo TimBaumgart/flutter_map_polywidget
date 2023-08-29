@@ -12,32 +12,96 @@ and the Flutter guide for
 -->
 `flutter_map_polywidget` is a [flutter_map](https://pub.dev/packages/flutter_map) plugin for
 displaying any widget on the map.
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-[polywidget.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/6caa4f5c-901b-4415-9411-a26e72e3a638)
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- choose the location and size of the desired area and display any widget you want
+- define the location by
+    - center, width, height and angle
+    - two exact and one approximated point
+- define whether the widget should rotate with the users view, restrict it to one orientation or
+  disable it completely
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add flutter_map_location_marker to your pubspec.yaml:
+
+```
+dependencies:
+  flutter_map_polywidget: any # or latest verion
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+Start by adding a `PolyWidgetLayer` to your map:
 
 ```dart
-
-const like = 'sample';
+FlutterMap
+(
+children: [
+//...
+PolyWidgetLayer(
+polyWidgets: [
+//...
+],
+)
+,
+]
+,
+)
 ```
 
-## Additional information
+Add `PolyWidget` widgets inside your `PolyWidgetLayer`. PolyWidgets can be created in two ways.
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+First, by defining the center location, the width, the height and the angle of your widget:
+
+```dart             
+PolyWidget(
+  center: LatLng(50.933465, 6.875109),
+  widthInMeters: 100,
+  heightInMeters: 200,
+  angle: 90,
+  child: ...,
+)
+```
+
+Second, by defining three corners of the desired widget on the map. The first and second corners are
+fixed and will be used to define the width and angle of your widget. The third corner is only fixed
+if it is placed in a 90° angle from the second corner. Otherwise the distance from the second to the
+third corner is used to calculate the actual third corner. All three corners are used to calculate
+the center location.
+
+```dart
+  PolyWidget.threePoints
+(
+pointA: LatLng(50.936614, 6.876283),
+pointB: LatLng(50.936498, 6.877663),
+approxPointC: LatLng(50.935312, 6.877419),
+child: ...,
+)
+,
+```
+
+By default, your widget rotates automatically so it lines up with the current rotation of the map.
+To disable that, set `noRotation` to ` true`:
+
+```dart                
+PolyWidget(
+  ...,
+  noRotation: true,
+  child: ...,
+)
+```
+
+If you want your widget to only rotate to portrait or landscape dimensions, you can do that by
+defining `forceOrientation`:
+
+```dart                
+PolyWidget(
+  ...,
+  forceOrientation: Orientation.landscape, //or Orientation.portrait
+  child: ...,
+)
+```
+
+You can find the example shown in the showcase video in `/example`.
