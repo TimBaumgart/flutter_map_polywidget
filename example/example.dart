@@ -22,6 +22,11 @@ class _PolyWidgetExampleState extends State<PolyWidgetExample>
     super.initState();
     mapController = MapController();
 
+    animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 15),
+    );
+
     var zoomAnimation = TweenSequence(
       [
         TweenSequenceItem(
@@ -40,10 +45,7 @@ class _PolyWidgetExampleState extends State<PolyWidgetExample>
     var rotationAnimation =
         Tween<double>(begin: 0, end: 360).animate(animationController);
 
-    animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 15),
-    )
+    animationController
       ..addListener(() {
         mapController.moveAndRotate(
           const LatLng(50.934798, 6.875384),

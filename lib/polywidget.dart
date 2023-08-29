@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 
+/// poly widget defined by center, width, height and angle
+///
+/// should always be added inside PolyWidgetLayer.polyWidgets
 class PolyWidget extends StatelessWidget {
   final LatLng center;
   final int widthInMeters;
@@ -29,9 +32,9 @@ class PolyWidget extends StatelessWidget {
     final mapState = FlutterMapState.of(context);
     Offset centerOffset = mapState.getOffsetFromOrigin(center);
     double width =
-        _calcLength(mapState, center, centerOffset, widthInMeters, 90);
+    _calcLength(mapState, center, centerOffset, widthInMeters, 90);
     double height =
-        _calcLength(mapState, center, centerOffset, heightInMeters, 180);
+    _calcLength(mapState, center, centerOffset, heightInMeters, 180);
 
     int turns = _calcTurns(
         width, height, mapState.rotation + angle, forceOrientation, noRotation);
@@ -56,6 +59,13 @@ class PolyWidget extends StatelessWidget {
     );
   }
 
+  /// poly widget defined by three points
+  ///
+  /// should always be added inside PolyWidgetLayer.polyWidgets
+  ///
+  /// [pointA] and [pointB] are fixed and will be used to define the width and angle of your widget. [approxPointC] is only fixed
+  // if it is placed in a 90° angle from [pointB]. Otherwise the distance from [pointB] to [approxPointC] is used to calculate the actual third corner. All three corners are used to calculate
+  // the center location.
   factory PolyWidget.threePoints({
     required LatLng pointA,
     required LatLng pointB,
@@ -85,14 +95,13 @@ class PolyWidget extends StatelessWidget {
     );
   }
 
-  double _calcLength(
-    FlutterMapState mapState,
-    LatLng center,
-    Offset centerOffset,
-    int widthInMeters,
-    int angleRad,
-  ) {
-    LatLng latLng = const Distance().offset(center, widthInMeters, angleRad);
+  /// calculates the current screen distance for [lengthInMeters]
+  double _calcLength(FlutterMapState mapState,
+      LatLng center,
+      Offset centerOffset,
+      int lengthInMeters,
+      int angleRad,) {
+    LatLng latLng = const Distance().offset(center, lengthInMeters, angleRad);
     Offset offset = mapState.getOffsetFromOrigin(latLng);
     double width =
         Offset(offset.dx - centerOffset.dx, offset.dy - centerOffset.dy)
@@ -100,19 +109,20 @@ class PolyWidget extends StatelessWidget {
     return width;
   }
 
-  int _calcTurns(
-    double width,
-    double height,
-    double rotation,
-    Orientation? forceOrientation,
-    bool noRotation,
-  ) {
+  /// calculates how much 90° turns are necessary to rotate the widget the desired way
+  int _calcTurns(double width,
+      double height,
+      double rotation,
+      Orientation? forceOrientation,
+      bool noRotation,) {
     if (noRotation) {
       return 0;
     }
 
     double turns = (rotation % 360) / 90;
-    if (turns.round().isOdd) {
+    if (turns
+        .round()
+        .isOdd) {
       double temp = width;
       width = height;
       height = temp;
@@ -121,12 +131,11 @@ class PolyWidget extends StatelessWidget {
     return _calcExactTurns(width, height, turns, forceOrientation);
   }
 
-  int _calcExactTurns(
-    double width,
-    double height,
-    double turns,
-    Orientation? forceOrientation,
-  ) {
+  /// calculates turns and takes the given [forceOrientation] value in account
+  int _calcExactTurns(double width,
+      double height,
+      double turns,
+      Orientation? forceOrientation,) {
     int rounded = turns.round();
 
     if (forceOrientation != null) {

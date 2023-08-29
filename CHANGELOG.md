@@ -5,3 +5,7 @@
 ## 0.0.2
 
 * Add example from showcase video in `/example`
+
+## 0.0.3
+
+* fix example and add documentation
