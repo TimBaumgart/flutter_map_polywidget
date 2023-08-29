@@ -35,20 +35,17 @@ dependencies:
 
 Start by adding a `PolyWidgetLayer` to your map:
 
-```dart
-FlutterMap
-(
-children: [
-//...
-PolyWidgetLayer(
-polyWidgets: [
-//...
-],
-)
-,
-]
-,
-)
+```dart 
+FlutterMap(
+  children: [
+    ...
+    PolyWidgetLayer(
+      polyWidgets: [
+        ...
+      ],
+    ),
+  ],
+),
 ```
 
 Add `PolyWidget` widgets inside your `PolyWidgetLayer`. PolyWidgets can be created in two ways.
@@ -62,7 +59,7 @@ PolyWidget(
   heightInMeters: 200,
   angle: 90,
   child: ...,
-)
+),
 ```
 
 Second, by defining three corners of the desired widget on the map. The first and second corners are
@@ -71,26 +68,24 @@ if it is placed in a 90° angle from the second corner. Otherwise the distance f
 third corner is used to calculate the actual third corner. All three corners are used to calculate
 the center location.
 
-```dart
-  PolyWidget.threePoints
-(
-pointA: LatLng(50.936614, 6.876283),
-pointB: LatLng(50.936498, 6.877663),
-approxPointC: LatLng(50.935312, 6.877419),
-child: ...,
-)
-,
+```dart 
+PolyWidget.threePoints(
+  pointA: LatLng(50.936614, 6.876283),
+  pointB: LatLng(50.936498, 6.877663),
+  approxPointC: LatLng(50.935312, 6.877419),
+  child: ...,
+),
 ```
 
 By default, your widget rotates automatically so it lines up with the current rotation of the map.
 To disable that, set `noRotation` to ` true`:
 
-```dart                
+```dart 
 PolyWidget(
   ...,
   noRotation: true,
   child: ...,
-)
+),
 ```
 
 If you want your widget to only rotate to portrait or landscape dimensions, you can do that by
@@ -101,7 +96,7 @@ PolyWidget(
   ...,
   forceOrientation: Orientation.landscape, //or Orientation.portrait
   child: ...,
-)
+),
 ```
 
 You can find the example shown in the showcase video in `/example`.
