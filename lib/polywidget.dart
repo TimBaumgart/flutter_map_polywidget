@@ -11,6 +11,7 @@ class PolyWidget extends StatelessWidget {
   final double angle;
   final Widget? child;
   final Orientation? forceOrientation;
+  final bool noRotation;
 
   const PolyWidget({
     super.key,
@@ -19,8 +20,9 @@ class PolyWidget extends StatelessWidget {
     required this.heightInMeters,
     this.angle = 0,
     this.forceOrientation,
+    bool? noRotation,
     required this.child,
-  });
+  }) : noRotation = noRotation ?? false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +33,8 @@ class PolyWidget extends StatelessWidget {
     double height =
         _calcLength(mapState, center, centerOffset, heightInMeters, 180);
 
-    int turns =
-        _calcSwap(width, height, mapState.rotation + angle, forceOrientation);
+    int turns = _calcTurns(
+        width, height, mapState.rotation + angle, forceOrientation, noRotation);
     double rotation = angle - (turns * 90);
 
     if (turns.isOdd) {
@@ -54,22 +56,13 @@ class PolyWidget extends StatelessWidget {
     );
   }
 
-  double _calcLength(FlutterMapState mapState, LatLng center,
-      Offset centerOffset, int widthInMeters, int angleRad) {
-    LatLng latLng = const Distance().offset(center, widthInMeters, angleRad);
-    Offset offset = mapState.getOffsetFromOrigin(latLng);
-    double width =
-        Offset(offset.dx - centerOffset.dx, offset.dy - centerOffset.dy)
-            .distance;
-    return width;
-  }
-
   factory PolyWidget.threePoints({
     required LatLng pointA,
     required LatLng pointB,
     required LatLng approxPointC,
     required Widget child,
     Orientation? forceOrientation,
+    bool? noRotation,
   }) {
     double width = const Distance().distance(pointA, pointB);
     double height = const Distance().distance(pointB, approxPointC);
@@ -87,17 +80,38 @@ class PolyWidget extends StatelessWidget {
       heightInMeters: height.toInt(),
       angle: xAngle - 90,
       forceOrientation: forceOrientation,
+      noRotation: noRotation,
       child: child,
     );
   }
 
-  double _calcTurns(double rotation) {
-    return (rotation % 360) / 90;
+  double _calcLength(
+    FlutterMapState mapState,
+    LatLng center,
+    Offset centerOffset,
+    int widthInMeters,
+    int angleRad,
+  ) {
+    LatLng latLng = const Distance().offset(center, widthInMeters, angleRad);
+    Offset offset = mapState.getOffsetFromOrigin(latLng);
+    double width =
+        Offset(offset.dx - centerOffset.dx, offset.dy - centerOffset.dy)
+            .distance;
+    return width;
   }
 
-  int _calcSwap(double width, double height, double rotation,
-      Orientation? forceOrientation) {
-    double turns = _calcTurns(rotation);
+  int _calcTurns(
+    double width,
+    double height,
+    double rotation,
+    Orientation? forceOrientation,
+    bool noRotation,
+  ) {
+    if (noRotation) {
+      return 0;
+    }
+
+    double turns = (rotation % 360) / 90;
     if (turns.round().isOdd) {
       double temp = width;
       width = height;
@@ -107,18 +121,24 @@ class PolyWidget extends StatelessWidget {
     return _calcExactTurns(width, height, turns, forceOrientation);
   }
 
-  int _calcExactTurns(double width, double height, double turns,
-      Orientation? forceOrientation) {
+  int _calcExactTurns(
+    double width,
+    double height,
+    double turns,
+    Orientation? forceOrientation,
+  ) {
+    int rounded = turns.round();
+
     if (forceOrientation != null) {
       if (forceOrientation == Orientation.landscape) {
         if (height > width) {
-          return (turns / 2).round() * 2;
+          return rounded + (turns < rounded ? -1 : 1);
         }
       }
 
       if (forceOrientation == Orientation.portrait) {
         if (width > height) {
-          return (((turns + 1) / 2).round() * 2) - 1;
+          return rounded + (turns < rounded ? -1 : 1);
         }
       }
     }

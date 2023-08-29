@@ -10,7 +10,8 @@ For general information about developing packages, see the Dart guide for
 and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
-
+`flutter_map_polywidget` is a [flutter_map](https://pub.dev/packages/flutter_map) plugin for
+displaying any widget on the map.
 TODO: Put a short description of the package here that helps potential users
 know whether this package might be useful for them.
 
@@ -29,6 +30,7 @@ TODO: Include short and useful examples for package users. Add longer examples
 to `/example` folder.
 
 ```dart
+
 const like = 'sample';
 ```
 
