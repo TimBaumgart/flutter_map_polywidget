@@ -32,9 +32,9 @@ class PolyWidget extends StatelessWidget {
     final mapState = FlutterMapState.of(context);
     Offset centerOffset = mapState.getOffsetFromOrigin(center);
     double width =
-    _calcLength(mapState, center, centerOffset, widthInMeters, 90);
+        _calcLength(mapState, center, centerOffset, widthInMeters, 90);
     double height =
-    _calcLength(mapState, center, centerOffset, heightInMeters, 180);
+        _calcLength(mapState, center, centerOffset, heightInMeters, 180);
 
     int turns = _calcTurns(
         width, height, mapState.rotation + angle, forceOrientation, noRotation);
@@ -96,11 +96,13 @@ class PolyWidget extends StatelessWidget {
   }
 
   /// calculates the current screen distance for [lengthInMeters]
-  double _calcLength(FlutterMapState mapState,
-      LatLng center,
-      Offset centerOffset,
-      int lengthInMeters,
-      int angleRad,) {
+  double _calcLength(
+    FlutterMapState mapState,
+    LatLng center,
+    Offset centerOffset,
+    int lengthInMeters,
+    int angleRad,
+  ) {
     LatLng latLng = const Distance().offset(center, lengthInMeters, angleRad);
     Offset offset = mapState.getOffsetFromOrigin(latLng);
     double width =
@@ -110,19 +112,19 @@ class PolyWidget extends StatelessWidget {
   }
 
   /// calculates how much 90° turns are necessary to rotate the widget the desired way
-  int _calcTurns(double width,
-      double height,
-      double rotation,
-      Orientation? forceOrientation,
-      bool noRotation,) {
+  int _calcTurns(
+    double width,
+    double height,
+    double rotation,
+    Orientation? forceOrientation,
+    bool noRotation,
+  ) {
     if (noRotation) {
       return 0;
     }
 
     double turns = (rotation % 360) / 90;
-    if (turns
-        .round()
-        .isOdd) {
+    if (turns.round().isOdd) {
       double temp = width;
       width = height;
       height = temp;
@@ -132,10 +134,12 @@ class PolyWidget extends StatelessWidget {
   }
 
   /// calculates turns and takes the given [forceOrientation] value in account
-  int _calcExactTurns(double width,
-      double height,
-      double turns,
-      Orientation? forceOrientation,) {
+  int _calcExactTurns(
+    double width,
+    double height,
+    double turns,
+    Orientation? forceOrientation,
+  ) {
     int rounded = turns.round();
 
     if (forceOrientation != null) {
