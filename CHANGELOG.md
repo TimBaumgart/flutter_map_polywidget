@@ -13,3 +13,7 @@
 ## 0.0.4
 
 * fix formatting in polywidget.dart
+
+## 0.0.5
+
+* add automatic deployment
