@@ -9,3 +9,7 @@
 ## 0.0.3
 
 * fix example and add documentation
+
+## 0.0.4
+
+* fix formatting in polywidget.dart
