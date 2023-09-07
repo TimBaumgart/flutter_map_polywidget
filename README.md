@@ -20,7 +20,7 @@ displaying any widget on the map.
 
 [polywidget_with_constraints.gif](assets/polywidget_with_constraints.gif)
 
-polywidget_with_constraints.gif](https://github.com/TimBaumgart/flutter_map_polywidget/assets/polywidget_with_constraints.gif)
+![polywidget_with_constraints.gif](https://github.com/TimBaumgart/flutter_map_polywidget/assets/polywidget_with_constraints.gif)
 
 Join [flutter_map Discord server](https://discord.gg/egEGeByf4q) to talk
 about `flutter_map_polywidget`, get help and help others in the #plugins channel.
