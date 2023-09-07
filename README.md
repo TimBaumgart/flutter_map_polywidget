@@ -18,9 +18,9 @@ displaying any widget on the map.
 
 [polywidget.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/6caa4f5c-901b-4415-9411-a26e72e3a638)
 
-[sdf.gif](assets/polywidget_with_constraints.gif)
+[polywidget_with_constraints.gif](assets/polywidget_with_constraints.gif)
 
-[sdf.gif](https://github.com/TimBaumgart/flutter_map_polywidget/assets/polywidget_with_constraints.gif)
+polywidget_with_constraints.gif](https://github.com/TimBaumgart/flutter_map_polywidget/assets/polywidget_with_constraints.gif)
 
 Join [flutter_map Discord server](https://discord.gg/egEGeByf4q) to talk
 about `flutter_map_polywidget`, get help and help others in the #plugins channel.
