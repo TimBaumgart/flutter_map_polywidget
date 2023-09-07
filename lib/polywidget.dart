@@ -29,15 +29,13 @@ class PolyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mapState = FlutterMapState.of(context);
-    Offset centerOffset = mapState.getOffsetFromOrigin(center);
-    double width =
-        _calcLength(mapState, center, centerOffset, widthInMeters, 90);
-    double height =
-        _calcLength(mapState, center, centerOffset, heightInMeters, 180);
+    final map = MapCamera.of(context);
+    Offset centerOffset = map.getOffsetFromOrigin(center);
+    double width = _calcLength(map, center, centerOffset, widthInMeters, 90);
+    double height = _calcLength(map, center, centerOffset, heightInMeters, 180);
 
     int turns = _calcTurns(
-        width, height, mapState.rotation + angle, forceOrientation, noRotation);
+        width, height, map.rotation + angle, forceOrientation, noRotation);
     double rotation = angle - (turns * 90);
 
     if (turns.isOdd) {
@@ -46,8 +44,13 @@ class PolyWidget extends StatelessWidget {
       height = temp;
     }
 
-    return Transform.translate(
-      offset: centerOffset.translate(-width / 2, -height / 2),
+    Offset offset = centerOffset.translate(-width / 2, -height / 2);
+
+    return Positioned(
+      left: offset.dx,
+      top: offset.dy,
+      width: width,
+      height: height,
       child: Transform.rotate(
         angle: degToRadian(rotation),
         child: SizedBox(
@@ -97,14 +100,14 @@ class PolyWidget extends StatelessWidget {
 
   /// calculates the current screen distance for [lengthInMeters]
   double _calcLength(
-    FlutterMapState mapState,
+    MapCamera mapCamera,
     LatLng center,
     Offset centerOffset,
     int lengthInMeters,
-    int angleRad,
+    int angle,
   ) {
-    LatLng latLng = const Distance().offset(center, lengthInMeters, angleRad);
-    Offset offset = mapState.getOffsetFromOrigin(latLng);
+    LatLng latLng = const Distance().offset(center, lengthInMeters, angle);
+    Offset offset = mapCamera.getOffsetFromOrigin(latLng);
     double width =
         Offset(offset.dx - centerOffset.dx, offset.dy - centerOffset.dy)
             .distance;

@@ -9,7 +9,6 @@ class PolyWidgetLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final mapState = FlutterMapState.of(context);
     return Stack(
       children: polyWidgets,
     );
