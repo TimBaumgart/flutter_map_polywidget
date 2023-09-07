@@ -27,6 +27,7 @@ about `flutter_map_polywidget`, get help and help others in the #plugins channel
 - define the location by
     - center, width, height and angle
     - two exact and one approximated point
+- constrain your custom widget so that it does not get too big or too small when you zoom in or out
 - define whether the widget should rotate with the users view, restrict it to one orientation or
   disable rotation completely
 
@@ -92,7 +93,7 @@ your widget needs a minimum size, this can result in layout errors. To prevent t
 constraints on your polywidget. This wraps your widget in a `FittedBox` and ensures, that it fits your
 constraints.
 
-Example: [polywidget_with_constraints.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/64c5008a-318e-458e-9f6c-cff5c1cfe88d)
+[polywidget_with_constraints.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/64c5008a-318e-458e-9f6c-cff5c1cfe88d)
 
 ```dart 
 PolyWidget(
@@ -131,6 +132,6 @@ PolyWidget(
 ),
 ```
 
-## Force orientation
+## Example
 
 You can find the example shown in the showcase video in `/example`.
