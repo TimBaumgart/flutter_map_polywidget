@@ -18,10 +18,6 @@ displaying any widget on the map.
 
 [polywidget.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/6caa4f5c-901b-4415-9411-a26e72e3a638)
 
-[polywidget_with_constraints.gif](assets/polywidget_with_constraints.gif)
-
-![polywidget_with_constraints.gif](https://github.com/TimBaumgart/flutter_map_polywidget/assets/polywidget_with_constraints.gif)
-
 Join [flutter_map Discord server](https://discord.gg/egEGeByf4q) to talk
 about `flutter_map_polywidget`, get help and help others in the #plugins channel.
 
@@ -89,6 +85,28 @@ PolyWidget.threePoints(
 ),
 ```
 
+### Constraints
+
+By default, your widget is unconstrained. The more you zoom out, the smaller your widget gets. When
+your widget needs a minimum size, this can result in errors. To prevent that, you can define
+constraints on your polywidget. This wraps your widget in a FittedBox and ensures, that it fits your
+constraints.
+
+Example: todo
+
+```dart 
+PolyWidget(
+  ...,
+  constraints: const BoxConstraints(
+    minWidth: 250,
+    maxWidth: 350,
+  ),
+  child: ...,
+),
+```
+
+### Disable rotation
+
 By default, your widget rotates automatically so it lines up with the current rotation of the map.
 To disable that, set `noRotation` to `true`:
 
@@ -100,6 +118,8 @@ PolyWidget(
 ),
 ```
 
+### Force orientation
+
 If you want your widget to only rotate to `portrait` or `landscape` orientation, you can do that by
 defining `forceOrientation`:
 
@@ -110,5 +130,7 @@ PolyWidget(
   child: ...,
 ),
 ```
+
+## Force orientation
 
 You can find the example shown in the showcase video in `/example`.
