@@ -15,6 +15,7 @@ class PolyWidget extends StatelessWidget {
   final Widget? child;
   final Orientation? forceOrientation;
   final bool noRotation;
+  final BoxConstraints? constraints;
 
   const PolyWidget({
     super.key,
@@ -24,6 +25,7 @@ class PolyWidget extends StatelessWidget {
     this.angle = 0,
     this.forceOrientation,
     bool? noRotation,
+    this.constraints,
     required this.child,
   }) : noRotation = noRotation ?? false;
 
@@ -53,11 +55,22 @@ class PolyWidget extends StatelessWidget {
       height: height,
       child: Transform.rotate(
         angle: degToRadian(rotation),
-        child: SizedBox(
-          width: width,
-          height: height,
-          child: child,
-        ),
+        child: Builder(builder: (context) {
+          if (constraints != null) {
+            return _ConstrainedPolyWidget(
+              width: width,
+              height: height,
+              constraints: constraints!,
+              child: child,
+            );
+          }
+
+          return SizedBox(
+            width: width,
+            height: height,
+            child: child,
+          );
+        }),
       ),
     );
   }
@@ -160,5 +173,43 @@ class PolyWidget extends StatelessWidget {
     }
 
     return turns.round();
+  }
+}
+
+/// polywidget that sizes itself to the given constraints
+class _ConstrainedPolyWidget extends StatelessWidget {
+  final double width;
+  final double height;
+  final BoxConstraints constraints;
+  final Widget? child;
+
+  const _ConstrainedPolyWidget({
+    required this.width,
+    required this.height,
+    required this.constraints,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = Size(width, height);
+    if (!constraints.isSatisfiedBy(size)) {
+      Size constrainedSize =
+          constraints.constrainSizeAndAttemptToPreserveAspectRatio(size);
+      return SizedBox.fromSize(
+        size: size,
+        child: FittedBox(
+          child: SizedBox.fromSize(
+            size: constrainedSize,
+            child: child,
+          ),
+        ),
+      );
+    }
+
+    return SizedBox.fromSize(
+      size: size,
+      child: child,
+    );
   }
 }
