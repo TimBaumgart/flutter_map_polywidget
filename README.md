@@ -93,8 +93,6 @@ your widget needs a minimum size, this can result in layout errors. To prevent t
 constraints on your polywidget. This wraps your widget in a `FittedBox` and ensures, that it fits your
 constraints.
 
-[polywidget_with_constraints.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/64c5008a-318e-458e-9f6c-cff5c1cfe88d)
-
 ```dart 
 PolyWidget(
   ...,
@@ -105,6 +103,9 @@ PolyWidget(
   child: ...,
 ),
 ```
+
+[polywidget_with_constraints.webm](https://github.com/TimBaumgart/flutter_map_polywidget/assets/46818679/64c5008a-318e-458e-9f6c-cff5c1cfe88d)
+
 
 ### Disable rotation
 
