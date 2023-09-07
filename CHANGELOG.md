@@ -25,4 +25,7 @@
 
 ## 0.1.0
 
-* make polywidget clickable by using Positioned() instead of Transform.translate()
+* make polywidget clickable by using `Positioned()` instead of `Transform.translate()`
+* add functionality
+  to [constrain](https://github.com/TimBaumgart/flutter_map_polywidget/blob/main/README.md#constraints)
+  custom widget
