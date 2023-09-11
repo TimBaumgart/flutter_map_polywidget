@@ -31,13 +31,15 @@ class PolyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final map = MapCamera.of(context);
-    Offset centerOffset = map.getOffsetFromOrigin(center);
-    double width = _calcLength(map, center, centerOffset, widthInMeters, 90);
-    double height = _calcLength(map, center, centerOffset, heightInMeters, 180);
+    final mapState = FlutterMapState.of(context);
+    Offset centerOffset = mapState.getOffsetFromOrigin(center);
+    double width =
+        _calcLength(mapState, center, centerOffset, widthInMeters, 90);
+    double height =
+        _calcLength(mapState, center, centerOffset, heightInMeters, 180);
 
     int turns = _calcTurns(
-        width, height, map.rotation + angle, forceOrientation, noRotation);
+        width, height, mapState.rotation + angle, forceOrientation, noRotation);
     double rotation = angle - (turns * 90);
 
     if (turns.isOdd) {
@@ -57,7 +59,7 @@ class PolyWidget extends StatelessWidget {
         angle: degToRadian(rotation),
         child: Builder(builder: (context) {
           if (constraints != null) {
-            return _ConstrainedPolyWidget(
+            return _ConstrainedPolyWidgetContent(
               width: width,
               height: height,
               constraints: constraints!,
@@ -113,14 +115,14 @@ class PolyWidget extends StatelessWidget {
 
   /// calculates the current screen distance for [lengthInMeters]
   double _calcLength(
-    MapCamera mapCamera,
+    FlutterMapState mapState,
     LatLng center,
     Offset centerOffset,
     int lengthInMeters,
     int angle,
   ) {
     LatLng latLng = const Distance().offset(center, lengthInMeters, angle);
-    Offset offset = mapCamera.getOffsetFromOrigin(latLng);
+    Offset offset = mapState.getOffsetFromOrigin(latLng);
     double width =
         Offset(offset.dx - centerOffset.dx, offset.dy - centerOffset.dy)
             .distance;
@@ -177,13 +179,13 @@ class PolyWidget extends StatelessWidget {
 }
 
 /// polywidget that sizes itself to the given constraints
-class _ConstrainedPolyWidget extends StatelessWidget {
+class _ConstrainedPolyWidgetContent extends StatelessWidget {
   final double width;
   final double height;
   final BoxConstraints constraints;
   final Widget? child;
 
-  const _ConstrainedPolyWidget({
+  const _ConstrainedPolyWidgetContent({
     required this.width,
     required this.height,
     required this.constraints,

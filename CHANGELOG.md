@@ -29,4 +29,3 @@
 * add functionality
   to [constrain](https://github.com/TimBaumgart/flutter_map_polywidget/blob/main/README.md#constraints)
   custom widget
-* upgrade `flutter_map` dependency to 6.0.0
