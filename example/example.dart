@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_polywidget/polywidget.dart';
-import 'package:flutter_map_polywidget/tile_layer.dart';
 import 'package:latlong2/latlong.dart';
 
 class PolyWidgetExample extends StatefulWidget {
@@ -63,7 +62,7 @@ class _PolyWidgetExampleState extends State<PolyWidgetExample>
         body: FlutterMap(
           mapController: mapController,
           options: MapOptions(
-            center: const LatLng(50.934798, 6.875384),
+            initialCenter: const LatLng(50.934798, 6.875384),
             onTap: (tapPosition, point) {
               if (kDebugMode) {
                 print(point);
@@ -120,13 +119,14 @@ class _PolyWidgetExampleState extends State<PolyWidgetExample>
                       ),
                     ),
                     child: FittedBox(
-                        child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        "any widget",
-                        style: TextStyle(color: Colors.black),
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          "any widget",
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
-                    )),
+                    ),
                   ),
                 ),
               ],
