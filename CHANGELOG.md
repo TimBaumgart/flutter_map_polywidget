@@ -38,4 +38,4 @@
 ### migration steps
 
 * replace `import 'package:flutter_map_polywidget/tile_layer.dart';`
-  with `import 'package:flutter_map_polywidget/polywidget.dart`
+  with `import 'package:flutter_map_polywidget/polywidget.dart';`
