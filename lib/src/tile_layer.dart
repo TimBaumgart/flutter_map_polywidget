@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map_polywidget/polywidget.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_polywidget/src/polywidget.dart';
 
 /// layer class where all poly widgets should be added
 class PolyWidgetLayer extends StatelessWidget {
@@ -9,8 +10,10 @@ class PolyWidgetLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: polyWidgets,
+    return MobileLayerTransformer(
+      child: Stack(
+        children: polyWidgets,
+      ),
     );
   }
 }
