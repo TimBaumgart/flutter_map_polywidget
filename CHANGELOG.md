@@ -29,3 +29,13 @@
 * add functionality
   to [constrain](https://github.com/TimBaumgart/flutter_map_polywidget/blob/main/README.md#constraints)
   custom widget
+
+## 1.0.0
+
+* migrate to flutter_map v6.0.0
+* add library file to reduce imports
+
+### migration steps
+
+* replace `import 'package:flutter_map_polywidget/tile_layer.dart';`
+  with `import 'package:flutter_map_polywidget/polywidget.dart`
