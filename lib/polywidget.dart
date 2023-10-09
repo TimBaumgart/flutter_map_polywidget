@@ -1,7 +1,7 @@
 library polywidget;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 /// poly widget defined by center, width, height and angle
@@ -31,15 +31,15 @@ class PolyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mapState = FlutterMapState.of(context);
-    Offset centerOffset = mapState.getOffsetFromOrigin(center);
+    final mapCamera = MapCamera.of(context);
+    Offset centerOffset = mapCamera.getOffsetFromOrigin(center);
     double width =
-        _calcLength(mapState, center, centerOffset, widthInMeters, 90);
+        _calcLength(mapCamera, center, centerOffset, widthInMeters, 90);
     double height =
-        _calcLength(mapState, center, centerOffset, heightInMeters, 180);
+        _calcLength(mapCamera, center, centerOffset, heightInMeters, 180);
 
-    int turns = _calcTurns(
-        width, height, mapState.rotation + angle, forceOrientation, noRotation);
+    int turns = _calcTurns(width, height, mapCamera.rotation + angle,
+        forceOrientation, noRotation);
     double rotation = angle - (turns * 90);
 
     if (turns.isOdd) {
@@ -115,14 +115,14 @@ class PolyWidget extends StatelessWidget {
 
   /// calculates the current screen distance for [lengthInMeters]
   double _calcLength(
-    FlutterMapState mapState,
+    MapCamera mapCamera,
     LatLng center,
     Offset centerOffset,
     int lengthInMeters,
     int angle,
   ) {
     LatLng latLng = const Distance().offset(center, lengthInMeters, angle);
-    Offset offset = mapState.getOffsetFromOrigin(latLng);
+    Offset offset = mapCamera.getOffsetFromOrigin(latLng);
     double width =
         Offset(offset.dx - centerOffset.dx, offset.dy - centerOffset.dy)
             .distance;
