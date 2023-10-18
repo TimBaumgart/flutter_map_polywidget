@@ -1,6 +1,6 @@
 name: flutter_map_polywidget
 description: flutter_map_polywidget is a flutter_map plugin for displaying any widget on the map.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/TimBaumgart/flutter_map_polywidget
 
 environment:
