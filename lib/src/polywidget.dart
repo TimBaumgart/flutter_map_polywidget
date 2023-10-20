@@ -2,6 +2,7 @@ library polywidget;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_polywidget/src/state.dart';
 import 'package:latlong2/latlong.dart';
 
 /// poly widget defined by center, width, height and angle
@@ -16,6 +17,7 @@ class PolyWidget extends StatelessWidget {
   final Orientation? forceOrientation;
   final bool noRotation;
   final BoxConstraints? constraints;
+  final EdgeInsets expand;
 
   const PolyWidget({
     super.key,
@@ -27,6 +29,7 @@ class PolyWidget extends StatelessWidget {
     bool? noRotation,
     this.constraints,
     required this.child,
+    this.expand = EdgeInsets.zero,
   }) : noRotation = noRotation ?? false;
 
   @override
@@ -50,29 +53,49 @@ class PolyWidget extends StatelessWidget {
 
     Offset offset = centerOffset.translate(-width / 2, -height / 2);
 
-    return Positioned(
+    PolyWidgetData data = PolyWidgetData(
+      center: center,
+      widthInMeters: widthInMeters,
+      heightInMeters: heightInMeters,
+      angle: angle,
+    );
+
+    PolyWidgetScreenData screenData = PolyWidgetScreenData(
       left: offset.dx,
       top: offset.dy,
       width: width,
       height: height,
-      child: Transform.rotate(
-        angle: degToRadian(rotation),
-        child: Builder(builder: (context) {
-          if (constraints != null) {
-            return _ConstrainedPolyWidgetContent(
-              width: width,
-              height: height,
-              constraints: constraints!,
+      rotation: rotation,
+    );
+
+    return PolyWidgetState(
+      parentContext: context,
+      data: data,
+      screenData: screenData,
+      child: Positioned(
+        left: screenData.left - expand.left,
+        top: screenData.top - expand.top,
+        width: screenData.width + expand.horizontal,
+        height: screenData.height + expand.vertical,
+        child: Transform.rotate(
+          angle: degToRadian(screenData.rotation),
+          child: Builder(builder: (context) {
+            if (constraints != null) {
+              return _ConstrainedPolyWidgetContent(
+                width: screenData.width + expand.horizontal,
+                height: screenData.height + expand.vertical,
+                constraints: constraints!,
+                child: child,
+              );
+            }
+
+            return SizedBox(
+              width: screenData.width,
+              height: screenData.height,
               child: child,
             );
-          }
-
-          return SizedBox(
-            width: width,
-            height: height,
-            child: child,
-          );
-        }),
+          }),
+        ),
       ),
     );
   }

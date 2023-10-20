@@ -10,9 +10,37 @@ class PolyWidgetLayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MobileLayerTransformer(
-      child: Stack(
-        children: polyWidgets,
-      ),
+      child: Builder(builder: (context) {
+        return PolyWidgetLayerState(
+          parentContext: context,
+          child: Stack(
+            children: polyWidgets,
+          ),
+        );
+      }),
     );
+  }
+}
+
+class PolyWidgetLayerState extends InheritedWidget {
+  final BuildContext parentContext;
+
+  const PolyWidgetLayerState({
+    super.key,
+    required super.child,
+    required this.parentContext,
+  });
+
+  @override
+  bool updateShouldNotify(covariant PolyWidgetLayerState oldWidget) {
+    return true;
+  }
+
+  static PolyWidgetLayerState? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<PolyWidgetLayerState>();
+  }
+
+  static PolyWidgetLayerState of(BuildContext context) {
+    return maybeOf(context)!;
   }
 }
