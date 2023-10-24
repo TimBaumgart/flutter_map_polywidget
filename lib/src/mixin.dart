@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_polywidget/flutter_map_polywidget.dart';
+import 'package:flutter_map_polywidget/src/tile_layer.dart';
 import 'package:latlong2/latlong.dart';
 
 mixin PolyWidgetMixin {

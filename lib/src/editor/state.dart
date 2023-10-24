@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_polywidget/flutter_map_polywidget.dart';
 import 'package:latlong2/latlong.dart';
 
 class PolyWidgetEditorState extends InheritedWidget {
@@ -6,17 +8,23 @@ class PolyWidgetEditorState extends InheritedWidget {
   final void Function(LatLng center) onUpdatePosition;
   final void Function(double angle) onUpdateAngle;
   final void Function({
-  LatLng? center,
-  int? widthInMeters,
-  int? heightInMeters,
-  double? angle,
+    LatLng? center,
+    int? widthInMeters,
+    int? heightInMeters,
+    double? angle,
   }) onSubmitted;
+  final void Function(BuildContext context) activate;
+
+  final void Function(MapEvent mapEvent) onMapEvent;
 
   final EdgeInsets? expand;
   final LatLng? center;
   final double? angle;
 
-  const PolyWidgetEditorState({super.key,
+  const PolyWidgetEditorState({
+    super.key,
+    required this.activate,
+    required this.onMapEvent,
     required this.onUpdateSize,
     required this.onUpdatePosition,
     required this.onUpdateAngle,
@@ -42,10 +50,10 @@ class PolyWidgetEditorState extends InheritedWidget {
 class PolyWidgetEditorStateProvider extends StatefulWidget {
   final Widget child;
   final Future<void> Function({
-  LatLng? center,
-  int? widthInMeters,
-  int? heightInMeters,
-  double? angle,
+    LatLng? center,
+    int? widthInMeters,
+    int? heightInMeters,
+    double? angle,
   }) onSubmitted;
 
   const PolyWidgetEditorStateProvider({
@@ -71,6 +79,18 @@ class _PolyWidgetEditorStateProviderState
       expand: expand,
       center: center,
       angle: angle,
+      activate: (BuildContext context) {
+        PolyWidgetState state = PolyWidgetState.of(context);
+        print("activate called ${state.data.center}");
+        bool move = MapController.of(context).move(LatLng(55, 6.8), 0);
+        print("move: $move");
+      },
+      onMapEvent: (mapEvent) {
+        setState(() {
+          center = mapEvent.camera.center;
+          angle = -mapEvent.camera.rotation;
+        });
+      },
       onUpdatePosition: (center) {
         setState(() {
           this.center = center;
@@ -93,11 +113,16 @@ class _PolyWidgetEditorStateProviderState
           heightInMeters: heightInMeters,
           angle: angle,
         );
-        setState(() {
-          expand = null;
-          this.center = null;
-          this.angle = null;
-        });
+        if (context.mounted) {
+          if (center != null) {
+            MapController.of(context).move(center, MapCamera.of(context).zoom);
+          }
+          setState(() {
+            expand = null;
+            this.center = null;
+            this.angle = null;
+          });
+        }
       },
       child: widget.child,
     );

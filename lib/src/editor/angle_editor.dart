@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map_polywidget/flutter_map_polywidget.dart';
-import 'package:flutter_map_polywidget/src/editor/state.dart';
 import 'package:flutter_map_polywidget/src/mixin.dart';
 import 'package:latlong2/latlong.dart';
 
 class PolyWidgetAngleEditor extends StatelessWidget with PolyWidgetMixin {
   @override
   Widget build(BuildContext context) {
+    return SizedBox.shrink();
     return Center(
       child: Draggable(
         data: "nothing",

@@ -1,7 +1,7 @@
 library polywidget;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_polywidget/src/data.dart';
 import 'package:flutter_map_polywidget/src/state.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -34,25 +34,6 @@ class PolyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mapCamera = MapCamera.of(context);
-    Offset centerOffset = mapCamera.getOffsetFromOrigin(center);
-    double width =
-        _calcLength(mapCamera, center, centerOffset, widthInMeters, 90);
-    double height =
-        _calcLength(mapCamera, center, centerOffset, heightInMeters, 180);
-
-    int turns = _calcTurns(width, height, mapCamera.rotation + angle,
-        forceOrientation, noRotation);
-    double rotation = angle - (turns * 90);
-
-    if (turns.isOdd) {
-      double temp = width;
-      width = height;
-      height = temp;
-    }
-
-    Offset offset = centerOffset.translate(-width / 2, -height / 2);
-
     PolyWidgetData data = PolyWidgetData(
       center: center,
       widthInMeters: widthInMeters,
@@ -60,13 +41,8 @@ class PolyWidget extends StatelessWidget {
       angle: angle,
     );
 
-    PolyWidgetScreenData screenData = PolyWidgetScreenData(
-      left: offset.dx,
-      top: offset.dy,
-      width: width,
-      height: height,
-      rotation: rotation,
-    );
+    PolyWidgetScreenData screenData =
+        data.convert(context, forceOrientation, noRotation);
 
     return PolyWidgetState(
       parentContext: context,
@@ -134,70 +110,6 @@ class PolyWidget extends StatelessWidget {
       noRotation: noRotation,
       child: child,
     );
-  }
-
-  /// calculates the current screen distance for [lengthInMeters]
-  double _calcLength(
-    MapCamera mapCamera,
-    LatLng center,
-    Offset centerOffset,
-    int lengthInMeters,
-    int angle,
-  ) {
-    LatLng latLng = const Distance().offset(center, lengthInMeters, angle);
-    Offset offset = mapCamera.getOffsetFromOrigin(latLng);
-    double width =
-        Offset(offset.dx - centerOffset.dx, offset.dy - centerOffset.dy)
-            .distance;
-    return width;
-  }
-
-  /// calculates how much 90° turns are necessary to rotate the widget the desired way
-  int _calcTurns(
-    double width,
-    double height,
-    double rotation,
-    Orientation? forceOrientation,
-    bool noRotation,
-  ) {
-    if (noRotation) {
-      return 0;
-    }
-
-    double turns = (rotation % 360) / 90;
-    if (turns.round().isOdd) {
-      double temp = width;
-      width = height;
-      height = temp;
-    }
-
-    return _calcExactTurns(width, height, turns, forceOrientation);
-  }
-
-  /// calculates turns and takes the given [forceOrientation] value in account
-  int _calcExactTurns(
-    double width,
-    double height,
-    double turns,
-    Orientation? forceOrientation,
-  ) {
-    int rounded = turns.round();
-
-    if (forceOrientation != null) {
-      if (forceOrientation == Orientation.landscape) {
-        if (height > width) {
-          return rounded + (turns < rounded ? -1 : 1);
-        }
-      }
-
-      if (forceOrientation == Orientation.portrait) {
-        if (width > height) {
-          return rounded + (turns < rounded ? -1 : 1);
-        }
-      }
-    }
-
-    return turns.round();
   }
 }
 
