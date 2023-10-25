@@ -45,3 +45,7 @@
 
 * allow all widgets to be placed inside `PolyWidgetLayer`. This allows the use of Selectors to build
   PolyWidgets for example.
+
+## 1.1.0-dev.1
+
+* add polywidget editor (wip)

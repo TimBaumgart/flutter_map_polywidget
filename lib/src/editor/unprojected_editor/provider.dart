@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map_polywidget/src/bounds_editor/resize_line.dart';
-import 'package:flutter_map_polywidget/src/bounds_editor/state.dart';
+import 'package:flutter_map_polywidget/src/editor/unprojected_editor/resize_line.dart';
+import 'package:flutter_map_polywidget/src/editor/unprojected_editor/state.dart';
 
-class BoundsEditorProvider extends StatefulWidget {
+class UnprojectedEditorProvider extends StatefulWidget {
   final BuildContext parentContext;
   final Size parentSize;
   final EdgeInsets size;
   final Function(EdgeInsets onChanged) onChanged;
   final Widget child;
+  final Size minCenterSize;
 
-  BoundsEditorProvider({
+  UnprojectedEditorProvider({
     super.key,
     required this.parentContext,
     required this.parentSize,
     EdgeInsets? size,
     required this.onChanged,
     required this.child,
+    required this.minCenterSize,
   }) : size = size ??
             EdgeInsets.symmetric(
               vertical: parentSize.height / 3,
@@ -23,10 +25,11 @@ class BoundsEditorProvider extends StatefulWidget {
             );
 
   @override
-  State<BoundsEditorProvider> createState() => _BoundsEditorProviderState();
+  State<UnprojectedEditorProvider> createState() =>
+      _UnprojectedEditorProviderState();
 }
 
-class _BoundsEditorProviderState extends State<BoundsEditorProvider> {
+class _UnprojectedEditorProviderState extends State<UnprojectedEditorProvider> {
   late EdgeInsets size;
   ResizeLineData? activeResizeLine;
 
@@ -37,7 +40,7 @@ class _BoundsEditorProviderState extends State<BoundsEditorProvider> {
   }
 
   @override
-  void didUpdateWidget(covariant BoundsEditorProvider oldWidget) {
+  void didUpdateWidget(covariant UnprojectedEditorProvider oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.parentSize != widget.parentSize ||
         oldWidget.size != widget.size) {
@@ -50,7 +53,7 @@ class _BoundsEditorProviderState extends State<BoundsEditorProvider> {
 
   @override
   Widget build(BuildContext context) {
-    return BoundsEditorState(
+    return UnprojectedEditorState(
       renderBox: widget.parentContext.findRenderObject() as RenderBox,
       parentSize: widget.parentSize,
       size: size,
@@ -65,13 +68,17 @@ class _BoundsEditorProviderState extends State<BoundsEditorProvider> {
           activeResizeLine = null;
           _updateSize();
         });
-        // widget.onChanged.call(size);
+        widget.onChanged.call(size);
       },
       child: widget.child,
     );
   }
 
   void _updateSize() {
-    size = activeResizeLine?.modifySize(size) ?? size;
+    size = activeResizeLine
+            ?.modifySize(size, widget.parentSize, widget.minCenterSize)
+            .clamp(const EdgeInsets.all(thickness),
+                const EdgeInsets.all(double.infinity)) as EdgeInsets? ??
+        size;
   }
 }

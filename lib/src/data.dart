@@ -120,11 +120,15 @@ class PolyWidgetData {
     return turns.round();
   }
 
-  PolyWidgetData copyWith({LatLng? center, double? angle}) {
+  PolyWidgetData copyWith(
+      {LatLng? center,
+      int? widthInMeters,
+      int? heightInMeters,
+      double? angle}) {
     return PolyWidgetData(
       center: center ?? this.center,
-      widthInMeters: widthInMeters,
-      heightInMeters: heightInMeters,
+      widthInMeters: widthInMeters ?? this.widthInMeters,
+      heightInMeters: heightInMeters ?? this.heightInMeters,
       angle: angle ?? this.angle,
     );
   }
@@ -197,11 +201,13 @@ class PolyWidgetScreenData {
     LatLng topLeft = camera.offsetToCrs(Offset(left, top));
     LatLng topRight = camera.offsetToCrs(Offset(left + width, top));
     LatLng bottomLeft = camera.offsetToCrs(Offset(left, top + height));
+    LatLng center =
+        camera.offsetToCrs(Offset(left + (width / 2), top + (height / 2)));
     return PolyWidgetData(
-      center: camera.center,
+      center: center,
       widthInMeters: const Distance().distance(topLeft, topRight).toInt(),
       heightInMeters: const Distance().distance(topLeft, bottomLeft).toInt(),
-      angle: camera.rotation,
+      angle: rotation,
     );
   }
 }
