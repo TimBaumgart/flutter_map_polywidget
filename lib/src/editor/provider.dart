@@ -5,29 +5,26 @@ import 'package:flutter_map_polywidget/flutter_map_polywidget.dart';
 class PolyWidgetEditorProvider extends StatefulWidget {
   final PolyWidgetEditorController controller;
   final MapCamera camera;
-  final PolyWidgetData? data;
   final BoxConstraints constraints;
   final Size minCenterSize;
   final EditorChildBuilder? builder;
   final Widget? centerChild;
   final EditorZoomMode zoomMode;
   final Function(MapCamera camera)? onMove;
-  final bool active;
+  final Function(BuildContext context, EdgeInsets size) builderX;
 
-  PolyWidgetEditorProvider({
+  const PolyWidgetEditorProvider({
     super.key,
-    PolyWidgetEditorController? controller,
+    required this.controller,
     required this.camera,
-    required this.data,
     required this.constraints,
     required this.minCenterSize,
     required this.builder,
     this.centerChild,
     required this.onMove,
-    required this.active,
     EditorZoomMode? zoomMode,
-  })  : zoomMode = zoomMode ?? EditorZoomMode.real,
-        controller = controller ?? PolyWidgetEditorController();
+    required this.builderX,
+  }) : zoomMode = zoomMode ?? EditorZoomMode.real;
 
   @override
   State<PolyWidgetEditorProvider> createState() =>
@@ -35,52 +32,62 @@ class PolyWidgetEditorProvider extends StatefulWidget {
 }
 
 class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
-  late EdgeInsets size;
+  bool active = false;
+  EdgeInsets size = EdgeInsets.zero;
 
   @override
   void initState() {
     super.initState();
-    _initSize();
+    _updateSize();
+    _updateActive();
+    widget.controller.addListener(() {
+      setState(() {
+        _updateSize();
+        _updateActive();
+      });
+    });
   }
 
   @override
   void didUpdateWidget(covariant PolyWidgetEditorProvider oldWidget) {
     super.didUpdateWidget(oldWidget);
-    PolyWidgetData? data = widget.data;
-    if (widget.active && data != null) {
-      bool justActivated = !oldWidget.active && widget.active;
-      bool somethingChanged =
-          oldWidget.constraints != widget.constraints || oldWidget.data != data;
-      if (justActivated || somethingChanged) {
-        MapCamera? desiredCamera;
-        if (justActivated) {
-          desiredCamera = widget.zoomMode
-              .transform(MapCamera.of(context), data, widget.constraints);
-          _onActivate(desiredCamera);
-        }
-        _initSize(customCamera: desiredCamera);
-        return;
-      }
+    if (!widget.controller.active) {
+      return;
+    }
 
-      if (widget.zoomMode == EditorZoomMode.real &&
-          widget.camera != oldWidget.camera) {
-        _initSize(
-          customCamera: widget.camera.withPosition(center: data.center),
-        );
-      }
+    bool constraintsChanged = oldWidget.constraints != widget.constraints;
+    if (constraintsChanged) {
+      _updateSize();
+    }
+
+    var camera = widget.camera;
+    if (camera.zoom != oldWidget.camera.zoom &&
+        widget.zoomMode.updateSizeOnZoom()) {
+      // var data = widget.controller.data;
+      // if (camera.center != data?.center) {
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   MapController.of(context).move(data!.center, camera.zoom);
+      // });
+      // }
+      _updateSize();
+    }
+
+    if (camera != oldWidget.camera) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.controller.updateOutputData(
+            widget.controller.toProjected(context, widget.constraints, size));
+      });
     }
   }
 
-  void _initSize({MapCamera? customCamera, PolyWidgetData? customData}) {
-    MapCamera camera = customCamera ?? widget.camera;
-    PolyWidgetData? data = customData ?? widget.data;
-
-    widget.controller.updateData(data);
-
+  void _updateSize({PolyWidgetData? customData}) {
+    PolyWidgetData? data = customData ?? widget.controller.data;
     if (data == null) {
-      size = EdgeInsets.zero;
       return;
     }
+
+    var camera = widget.camera;
+    camera = widget.zoomMode.transform(camera, data, widget.constraints);
 
     size = toUnprojected(
       camera.withRotation(0),
@@ -92,51 +99,11 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
   @override
   Widget build(BuildContext context) {
     return PolyWidgetEditorState(
-      onActivate: () {
-        setState(() {
-          _initSize();
-        });
-      },
-      onSave: () {
-        return toProjected(context, widget.constraints, size);
-      },
-      updateData: ({int? width, int? height, double? angle}) {
-        setState(() {
-          _initSize(
-            customData: widget.data?.copyWith(
-              heightInMeters: height,
-              widthInMeters: width,
-              angle: angle,
-            ),
-          );
-        });
-        if (angle != null) {
-          MapCamera camera = widget.camera.withRotation(-angle);
-          if (widget.onMove != null) {
-            widget.onMove!.call(camera);
-          } else {
-            MapController.of(context).moveAndRotate(
-              camera.center,
-              camera.zoom,
-              camera.rotation,
-            );
-          }
-        }
-      },
+      onSubmit: () =>
+          widget.controller.toProjected(context, widget.constraints, size),
       child: Builder(
         builder: (context) {
-          widget.controller.attach(context);
-          return UnprojectedEditor(
-            size: size,
-            minCenterSize: widget.minCenterSize,
-            onChanged: (size) {
-              this.size = size;
-              widget.controller
-                  .updateData(toProjected(context, widget.constraints, size));
-            },
-            builder: widget.builder,
-            centerChild: widget.centerChild,
-          );
+          return widget.builderX.call(context, size);
         },
       ),
     );
@@ -153,19 +120,6 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
     );
   }
 
-  PolyWidgetData toProjected(
-      BuildContext context, BoxConstraints constraints, EdgeInsets size) {
-    MapCamera camera = MapCamera.of(context);
-    PolyWidgetScreenData polyWidgetScreenData = PolyWidgetScreenData(
-      left: size.left,
-      top: size.top,
-      width: constraints.maxWidth - size.horizontal,
-      height: constraints.maxHeight - size.vertical,
-      rotation: -camera.rotation,
-    );
-    return polyWidgetScreenData.convert(context);
-  }
-
   void _onActivate(MapCamera camera) {
     if (widget.onMove != null) {
       widget.onMove!.call(camera);
@@ -175,6 +129,22 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
         camera.zoom,
         camera.rotation,
       );
+    }
+  }
+
+  void _updateActive() {
+    if (active != widget.controller.active) {
+      if (!active) {
+        PolyWidgetData data = widget.controller.data!;
+        var camera = widget.camera;
+        camera = widget.zoomMode.transform(camera, data, widget.constraints);
+        _onActivate(
+          camera,
+        );
+      }
+      setState(() {
+        active = widget.controller.active;
+      });
     }
   }
 }

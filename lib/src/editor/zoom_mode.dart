@@ -23,4 +23,13 @@ extension EditorZoomModeExtension on EditorZoomMode {
             .withRotation(-data.angle);
     }
   }
+
+  bool updateSizeOnZoom() {
+    switch (this) {
+      case EditorZoomMode.fixed:
+        return false;
+      case EditorZoomMode.real:
+        return true;
+    }
+  }
 }

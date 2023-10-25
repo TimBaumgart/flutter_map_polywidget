@@ -21,15 +21,6 @@ class _PolyWidgetEditorLayerProviderState
   @override
   Widget build(BuildContext context) {
     return PolyWidgetEditorLayerState(
-      onEdit: (data) {
-        setState(() {
-          if (this.data == null) {
-            this.data = data;
-          } else {
-            this.data = null;
-          }
-        });
-      },
       child: Builder(builder: (context) {
         return widget.builder.call(context, data);
       }),
