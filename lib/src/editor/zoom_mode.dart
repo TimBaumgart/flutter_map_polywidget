@@ -15,12 +15,13 @@ extension EditorZoomModeExtension on EditorZoomMode {
               EdgeInsets.all((constraints.biggest.shortestSide * 0.3827) / 2),
         );
 
-        var desiredCamera = fit.fit(camera.withRotation(-data.angle));
+        var desiredCamera =
+            fit.fit(camera.withRotation(-data.angle.toDouble()));
         return desiredCamera;
       case EditorZoomMode.real:
         return camera
             .withPosition(center: data.center)
-            .withRotation(-data.angle);
+            .withRotation(-data.angle.toDouble());
     }
   }
 

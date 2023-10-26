@@ -4,9 +4,9 @@ import 'package:latlong2/latlong.dart';
 
 class PolyWidgetData {
   final LatLng center;
-  final int widthInMeters;
-  final int heightInMeters;
-  final double angle;
+  final num widthInMeters;
+  final num heightInMeters;
+  final num angle;
 
   PolyWidgetData({
     required this.center,
@@ -71,8 +71,8 @@ class PolyWidgetData {
     bool mobileLayer,
     LatLng center,
     Offset centerOffset,
-    int lengthInMeters,
-    int angle,
+    num lengthInMeters,
+    num angle,
   ) {
     LatLng latLng = const Distance().offset(center, lengthInMeters, angle);
     Offset offset = mobileLayer
@@ -163,7 +163,7 @@ class PolyWidgetData {
       angle.hashCode;
 
   List<LatLng> calcOutlineCoordinates() {
-    double angle = this.angle;
+    num angle = this.angle;
     const distance = Distance();
     LatLng east = distance.offset(center, heightInMeters / 2, angle);
     LatLng northEast = distance.offset(east, widthInMeters / 2, angle - 90);
@@ -220,8 +220,8 @@ class PolyWidgetScreenData {
         camera.offsetToCrs(Offset(left + (width / 2), top + (height / 2)));
     return PolyWidgetData(
       center: center,
-      widthInMeters: const Distance().distance(topLeft, topRight).toInt(),
-      heightInMeters: const Distance().distance(topLeft, bottomLeft).toInt(),
+      widthInMeters: const Distance().distance(topLeft, topRight),
+      heightInMeters: const Distance().distance(topLeft, bottomLeft),
       angle: rotation,
     );
   }

@@ -62,7 +62,8 @@ class _UnprojectedEditorProviderState extends State<UnprojectedEditorProvider> {
           activeResizeLine = resizeLine;
           _updateSize();
         });
-        widget.onChanged.call(size);
+        // do to inaccurate project/unproject-calculations changes in size should be updated as rarely as possible
+        // widget.onChanged.call(size);
       },
       submitActiveLine: () {
         setState(() {

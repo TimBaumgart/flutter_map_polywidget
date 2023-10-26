@@ -10,9 +10,9 @@ import 'package:latlong2/latlong.dart';
 /// should always be added inside PolyWidgetLayer.polyWidgets
 class PolyWidget extends StatelessWidget {
   final LatLng center;
-  final int widthInMeters;
-  final int heightInMeters;
-  final double angle;
+  final num widthInMeters;
+  final num heightInMeters;
+  final num angle;
   final Widget? child;
   final Orientation? forceOrientation;
   final bool noRotation;
@@ -40,7 +40,7 @@ class PolyWidget extends StatelessWidget {
       heightInMeters: heightInMeters,
       angle: angle,
     );
-  
+
     PolyWidgetScreenData screenData = data.convert(
       context: context,
       mobileLayer: true,
@@ -107,8 +107,8 @@ class PolyWidget extends StatelessWidget {
         .offset(centerLine, height / 2, xAngle + cDirectionAngle);
     return PolyWidget(
       center: center,
-      widthInMeters: width.toInt(),
-      heightInMeters: height.toInt(),
+      widthInMeters: width,
+      heightInMeters: height,
       angle: xAngle - 90,
       forceOrientation: forceOrientation,
       noRotation: noRotation,
