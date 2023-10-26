@@ -3,6 +3,7 @@ import 'package:flutter_map_polywidget/flutter_map_polywidget.dart';
 import 'package:flutter_map_polywidget/src/editor/unprojected_editor/provider.dart';
 import 'package:flutter_map_polywidget/src/editor/unprojected_editor/resize_line.dart';
 import 'package:flutter_map_polywidget/src/editor/unprojected_editor/state.dart';
+import 'package:latlong2/latlong.dart';
 
 class UnprojectedEditor extends StatelessWidget {
   final EdgeInsets? size;
@@ -10,6 +11,7 @@ class UnprojectedEditor extends StatelessWidget {
   final EditorChildBuilder? builder;
   final Size minCenterSize;
   final Widget? centerChild;
+  final double? rotation;
 
   const UnprojectedEditor({
     super.key,
@@ -17,6 +19,7 @@ class UnprojectedEditor extends StatelessWidget {
     required this.onChanged,
     required this.minCenterSize,
     required this.builder,
+    required this.rotation,
     this.centerChild,
   });
 
@@ -48,11 +51,14 @@ class UnprojectedEditor extends StatelessWidget {
                             top: state.size.top,
                             left: state.size.left,
                             width:
-                                state.parentSize.width - state.size.horizontal,
+                            state.parentSize.width - state.size.horizontal,
                             height:
-                                state.parentSize.height - state.size.vertical,
-                            child: const ColoredBox(
-                              color: Colors.black,
+                            state.parentSize.height - state.size.vertical,
+                            child: _Rotated(
+                              rotation: rotation,
+                              child: const ColoredBox(
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                         ],
@@ -67,7 +73,10 @@ class UnprojectedEditor extends StatelessWidget {
                   left: state.size.left,
                   bottom: state.size.bottom,
                   right: state.size.right,
-                  child: centerChild!,
+                  child: _Rotated(
+                    rotation: rotation,
+                    child: centerChild!,
+                  ),
                 ),
               LeftHorizontalResizeLineData().build(context),
               RightHorizontalResizeLineData().build(context),
@@ -82,5 +91,27 @@ class UnprojectedEditor extends StatelessWidget {
         }),
       );
     });
+  }
+}
+
+class _Rotated extends StatelessWidget {
+  final Widget child;
+  final double? rotation;
+
+  const _Rotated({
+    required this.child,
+    required this.rotation,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (rotation == null) {
+      return child;
+    }
+
+    return Transform.rotate(
+      angle: degToRadian(rotation!),
+      child: child,
+    );
   }
 }

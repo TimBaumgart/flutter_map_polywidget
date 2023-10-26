@@ -167,6 +167,10 @@ class PolyWidgetData {
     LatLng northWest = distance.offset(southWest, widthInMeters, angle + 270);
     return [northEast, southEast, southWest, northWest];
   }
+
+  double? calcRotationDiff(MapCamera camera) {
+    return angle - -camera.rotation;
+  }
 }
 
 class PolyWidgetScreenData {

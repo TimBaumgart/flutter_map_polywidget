@@ -37,7 +37,7 @@ class PolyWidgetEditor extends StatelessWidget {
           builder: builder,
           centerChild: centerChild,
           zoomMode: zoomMode,
-          builderX: (context, size) {
+          builderX: (context, size, rotation) {
             controller.attach(context);
             return AnimatedOpacity(
               opacity: controller.active ? 1 : 0,
@@ -46,6 +46,7 @@ class PolyWidgetEditor extends StatelessWidget {
                 ignoring: !controller.active,
                 child: UnprojectedEditor(
                   size: size,
+                  rotation: rotation,
                   minCenterSize: minCenterSize,
                   onChanged: (size) {
                     controller.updateUnprojectedSize(

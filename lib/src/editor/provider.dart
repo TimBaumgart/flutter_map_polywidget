@@ -12,7 +12,8 @@ class PolyWidgetEditorProvider extends StatefulWidget {
   final Widget? centerChild;
   final EditorZoomMode zoomMode;
   final MoveCallback? onMove;
-  final Function(BuildContext context, EdgeInsets size) builderX;
+  final Function(BuildContext context, EdgeInsets size, double? rotation)
+      builderX;
 
   const PolyWidgetEditorProvider({
     super.key,
@@ -129,12 +130,17 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
   @override
   Widget build(BuildContext context) {
     return PolyWidgetEditorState(
-      onSubmit: () =>
-          widget.controller
-              .toProjected(context, widget.camera, widget.constraints, size),
+      onSubmit: () => widget.controller
+          .toProjected(context, widget.camera, widget.constraints, size),
       child: Builder(
         builder: (context) {
-          return widget.builderX.call(context, size);
+          return widget.builderX.call(
+            context,
+            size,
+            activationMovementFinished
+                ? null
+                : widget.controller.data?.calcRotationDiff(widget.camera),
+          );
         },
       ),
     );
@@ -143,7 +149,7 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
   EdgeInsets toUnprojected(BuildContext context, MapCamera camera,
       BoxConstraints constraints, PolyWidgetData data) {
     PolyWidgetScreenData convert =
-    data.convert(context, camera, null, true, false);
+        data.convert(context, camera, null, true, false);
     return EdgeInsets.fromLTRB(
       convert.left,
       convert.top,
