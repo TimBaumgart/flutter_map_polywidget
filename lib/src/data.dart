@@ -15,22 +15,27 @@ class PolyWidgetData {
     required this.angle,
   });
 
-  PolyWidgetScreenData convertForMobileLayer(
-    BuildContext context,
+  PolyWidgetScreenData convert({
+    required BuildContext context,
+    required bool mobileLayer,
     Orientation? forceOrientation,
-    bool noRotation,
-  ) {
+    bool noRotation = false,
+  }) {
     final mapCamera = MapCamera.of(context);
-    return convert(context, mapCamera, forceOrientation, noRotation, true);
+    return convertForCamera(
+      mapCamera: mapCamera,
+      mobileLayer: mobileLayer,
+      forceOrientation: forceOrientation,
+      noRotation: noRotation,
+    );
   }
 
-  PolyWidgetScreenData convert(
-    BuildContext context,
-    MapCamera mapCamera,
+  PolyWidgetScreenData convertForCamera({
+    required MapCamera mapCamera,
+    required bool mobileLayer,
     Orientation? forceOrientation,
-    bool noRotation,
-    bool mobileLayer,
-  ) {
+    bool noRotation = false,
+  }) {
     Offset centerOffset = mobileLayer
         ? mapCamera.getOffsetFromOrigin(center)
         : mapCamera.latLngToScreenPoint(center).toOffset();

@@ -33,11 +33,8 @@ class PolyWidgetEditor extends StatelessWidget {
           camera: camera,
           onMove: onMove,
           constraints: constraints,
-          minCenterSize: minCenterSize,
-          builder: builder,
-          centerChild: centerChild,
           zoomMode: zoomMode,
-          builderX: (context, size, rotation) {
+          builder: (context, size, rotation) {
             controller.attach(context);
             return AnimatedOpacity(
               opacity: controller.active ? 1 : 0,

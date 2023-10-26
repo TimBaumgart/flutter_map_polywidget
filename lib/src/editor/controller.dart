@@ -6,7 +6,6 @@ import 'package:flutter_map_polywidget/src/editor/state.dart';
 class PolyWidgetEditorController with ChangeNotifier {
   late PolyWidgetEditorState state;
   PolyWidgetData? data;
-  PolyWidgetData? outputData;
 
   PolyWidgetEditorController();
 
@@ -16,23 +15,17 @@ class PolyWidgetEditorController with ChangeNotifier {
 
   void show(PolyWidgetData data) {
     this.data = data;
-    this.outputData = data;
     notifyListeners();
   }
 
   PolyWidgetData submit() {
     PolyWidgetData? data = state.onSubmit();
-    if (data == null) {
-      throw Exception("cannot submit inactive poly widget editor");
-    }
-
     hide();
     return data;
   }
 
   void hide() {
-    this.data = null;
-    this.outputData = null;
+    data = null;
     notifyListeners();
   }
 
@@ -42,31 +35,11 @@ class PolyWidgetEditorController with ChangeNotifier {
       heightInMeters: height,
       angle: angle,
     );
-    outputData = data;
     notifyListeners();
   }
 
-  // void updateWidth(int width) {
-  //   data = data?.copyWith(widthInMeters: width);
-  //   outputData = data;
-  //   notifyListeners();
-  // }
-  //
-  // void updateHeight(int height) {
-  //   data = data?.copyWith(heightInMeters: height);
-  //   outputData = data;
-  //   notifyListeners();
-  // }
-  //
-  // void updateAngle(double angle) {
-  //   data = data?.copyWith(angle: angle);
-  //   outputData = data;
-  //   notifyListeners();
-  // }
-
   void updateOutputData(PolyWidgetData? data) {
     this.data = data;
-    outputData = data;
     notifyListeners();
   }
 
@@ -75,10 +48,6 @@ class PolyWidgetEditorController with ChangeNotifier {
   void updateUnprojectedSize(BuildContext context, MapCamera camera,
       BoxConstraints constraints, EdgeInsets size) {
     data = toProjected(context, camera, constraints, size);
-    print("updateUnprojectedSize ${data?.center}");
-    outputData = data;
-    // outputData = toProjected(context, constraints, size);
-    // outputData = data;
     notifyListeners();
   }
 
@@ -90,7 +59,6 @@ class PolyWidgetEditorController with ChangeNotifier {
       width: constraints.maxWidth - size.horizontal,
       height: constraints.maxHeight - size.vertical,
       rotation: -mod(camera.rotation, -180, 180),
-      // rotation: -camera.rotation,
     );
     return polyWidgetScreenData.convert(context, camera);
   }

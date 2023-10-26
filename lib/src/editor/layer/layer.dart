@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_polywidget/flutter_map_polywidget.dart';
-import 'package:flutter_map_polywidget/src/editor/layer/provider.dart';
 
 typedef MoveCallback = Future<void> Function(MapCamera camera);
 typedef EditorChildBuilder = Widget Function(
@@ -30,24 +29,20 @@ class PolyWidgetEditorLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PolyWidgetEditorLayerProvider(
-      builder: (context, data) {
-        return Stack(
-          children: [
-            PolyWidgetLayer(
-              polyWidgets: children,
-            ),
-            PolyWidgetEditor(
-              controller: controller,
-              builder: builder,
-              centerChild: centerChild,
-              onMove: onMove,
-              zoomMode: zoomMode,
-              minCenterSize: minCenterSize,
-            ),
-          ],
-        );
-      },
+    return Stack(
+      children: [
+        PolyWidgetLayer(
+          polyWidgets: children,
+        ),
+        PolyWidgetEditor(
+          controller: controller,
+          builder: builder,
+          centerChild: centerChild,
+          onMove: onMove,
+          zoomMode: zoomMode,
+          minCenterSize: minCenterSize,
+        ),
+      ],
     );
   }
 }

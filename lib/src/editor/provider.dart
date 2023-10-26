@@ -7,25 +7,19 @@ class PolyWidgetEditorProvider extends StatefulWidget {
   final PolyWidgetEditorController controller;
   final MapCamera camera;
   final BoxConstraints constraints;
-  final Size minCenterSize;
-  final EditorChildBuilder? builder;
-  final Widget? centerChild;
   final EditorZoomMode zoomMode;
   final MoveCallback? onMove;
   final Function(BuildContext context, EdgeInsets size, double? rotation)
-      builderX;
+      builder;
 
   const PolyWidgetEditorProvider({
     super.key,
     required this.controller,
     required this.camera,
     required this.constraints,
-    required this.minCenterSize,
-    required this.builder,
-    this.centerChild,
     required this.onMove,
     EditorZoomMode? zoomMode,
-    required this.builderX,
+    required this.builder,
   }) : zoomMode = zoomMode ?? EditorZoomMode.real;
 
   @override
@@ -45,10 +39,12 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
     _updateSize();
     _updateActive();
     widget.controller.addListener(() {
-      setState(() {
-        _updateSize();
-        _updateActive();
-      });
+      if (context.mounted) {
+        setState(() {
+          _updateSize();
+          _updateActive();
+        });
+      }
     });
   }
 
@@ -69,7 +65,6 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
         widget.zoomMode.updateSizeOnZoom();
     var updateOnActivationMovement =
         !activationMovementFinished && camera != oldWidget.camera;
-    debugPrint("updateOnActivationMovement: $updateOnActivationMovement");
     if (updateOnZoom || updateOnActivationMovement) {
       _updateSize();
     }
@@ -78,7 +73,6 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
       cameraFuture?.cancel();
       cameraFuture = CancelableOperation.fromFuture(
         Future.delayed(const Duration(milliseconds: 200)),
-        // onCancel: () => {debugPrint('onCancel')},
       ).then((value) {
         if (!widget.controller.active) {
           return;
@@ -108,23 +102,12 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
       return;
     }
 
-    // var camera = widget.camera;
-    // camera = widget.zoomMode.transform(camera, data, widget.constraints);
-
-    // var camera =
-    // .withPosition(center: data.center)
-    // .withRotation(data.angle)
-    // .withRotation(-widget.camera.rotation)
-    // .withRotation(0)
-    // ;
-
     size = toUnprojected(
       context,
       widget.camera,
       widget.constraints,
       data,
     );
-    print(size);
   }
 
   @override
@@ -134,7 +117,7 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
           .toProjected(context, widget.camera, widget.constraints, size),
       child: Builder(
         builder: (context) {
-          return widget.builderX.call(
+          return widget.builder.call(
             context,
             size,
             activationMovementFinished
@@ -148,8 +131,11 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
 
   EdgeInsets toUnprojected(BuildContext context, MapCamera camera,
       BoxConstraints constraints, PolyWidgetData data) {
-    PolyWidgetScreenData convert =
-        data.convert(context, camera, null, true, false);
+    PolyWidgetScreenData convert = data.convertForCamera(
+      mapCamera: camera,
+      mobileLayer: false,
+      noRotation: true,
+    );
     return EdgeInsets.fromLTRB(
       convert.left,
       convert.top,

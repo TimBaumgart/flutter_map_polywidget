@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map_polywidget/src/editor/unprojected_editor/draggable.dart';
 import 'package:flutter_map_polywidget/src/editor/unprojected_editor/state.dart';
 
-const double thickness = 8;
+const double thickness = 16;
 const double thicknessOffset = thickness / 2;
 const double visibleThickness = 1;
 

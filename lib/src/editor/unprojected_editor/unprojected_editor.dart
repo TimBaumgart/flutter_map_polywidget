@@ -51,9 +51,9 @@ class UnprojectedEditor extends StatelessWidget {
                             top: state.size.top,
                             left: state.size.left,
                             width:
-                            state.parentSize.width - state.size.horizontal,
+                                state.parentSize.width - state.size.horizontal,
                             height:
-                            state.parentSize.height - state.size.vertical,
+                                state.parentSize.height - state.size.vertical,
                             child: _Rotated(
                               rotation: rotation,
                               child: const ColoredBox(
