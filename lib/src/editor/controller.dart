@@ -36,48 +36,69 @@ class PolyWidgetEditorController with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateWidth(int width) {
-    data = data?.copyWith(widthInMeters: width);
+  void updateData({int? width, int? height, double? angle}) {
+    data = data?.copyWith(
+      widthInMeters: width,
+      heightInMeters: height,
+      angle: angle,
+    );
     outputData = data;
     notifyListeners();
   }
 
-  void updateHeight(int height) {
-    data = data?.copyWith(heightInMeters: height);
-    outputData = data;
-    notifyListeners();
-  }
-
-  void updateAngle(double angle) {
-    data = data?.copyWith(angle: angle);
-    outputData = data;
-    notifyListeners();
-  }
+  // void updateWidth(int width) {
+  //   data = data?.copyWith(widthInMeters: width);
+  //   outputData = data;
+  //   notifyListeners();
+  // }
+  //
+  // void updateHeight(int height) {
+  //   data = data?.copyWith(heightInMeters: height);
+  //   outputData = data;
+  //   notifyListeners();
+  // }
+  //
+  // void updateAngle(double angle) {
+  //   data = data?.copyWith(angle: angle);
+  //   outputData = data;
+  //   notifyListeners();
+  // }
 
   void updateOutputData(PolyWidgetData? data) {
+    this.data = data;
     outputData = data;
     notifyListeners();
   }
 
   bool get active => data != null;
 
-  void updateUnprojectedSize(
-      BuildContext context, BoxConstraints constraints, EdgeInsets size) {
-    data = toProjected(context, constraints, size);
+  void updateUnprojectedSize(BuildContext context, MapCamera camera,
+      BoxConstraints constraints, EdgeInsets size) {
+    data = toProjected(context, camera, constraints, size);
+    print("updateUnprojectedSize ${data?.center}");
     outputData = data;
+    // outputData = toProjected(context, constraints, size);
+    // outputData = data;
     notifyListeners();
   }
 
-  PolyWidgetData toProjected(
-      BuildContext context, BoxConstraints constraints, EdgeInsets size) {
-    MapCamera camera = MapCamera.of(context);
+  PolyWidgetData toProjected(BuildContext context, MapCamera camera,
+      BoxConstraints constraints, EdgeInsets size) {
     PolyWidgetScreenData polyWidgetScreenData = PolyWidgetScreenData(
       left: size.left,
       top: size.top,
       width: constraints.maxWidth - size.horizontal,
       height: constraints.maxHeight - size.vertical,
-      rotation: -camera.rotation,
+      rotation: -mod(camera.rotation, -180, 180),
+      // rotation: -camera.rotation,
     );
-    return polyWidgetScreenData.convert(context);
+    return polyWidgetScreenData.convert(context, camera);
+  }
+
+  double mod(double value, double fromExclusive, double toInclusive) {
+    double step = toInclusive - fromExclusive;
+    var result = ((value - fromExclusive) % step) + fromExclusive;
+    if (result == fromExclusive) result = toInclusive;
+    return result;
   }
 }

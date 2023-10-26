@@ -42,7 +42,7 @@ class PolyWidget extends StatelessWidget {
     );
 
     PolyWidgetScreenData screenData =
-        data.convert(context, forceOrientation, noRotation);
+        data.convertForMobileLayer(context, forceOrientation, noRotation);
 
     return PolyWidgetState(
       parentContext: context,

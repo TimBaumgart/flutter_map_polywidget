@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_polywidget/flutter_map_polywidget.dart';
 import 'package:flutter_map_polywidget/src/editor/layer/provider.dart';
 
-typedef MoveCallback = void Function(MapCamera camera);
+typedef MoveCallback = Future<void> Function(MapCamera camera);
 typedef EditorChildBuilder = Widget Function(
     BuildContext context, EdgeInsets padding);
 typedef EditEditorCallback = Function(PolyWidgetData? data);

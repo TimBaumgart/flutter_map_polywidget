@@ -10,7 +10,7 @@ class PolyWidgetEditor extends StatelessWidget {
   final Widget? centerChild;
   final Size minCenterSize;
   final EditorZoomMode? zoomMode;
-  final Function(MapCamera camera)? onMove;
+  final MoveCallback? onMove;
 
   PolyWidgetEditor({
     super.key,
@@ -27,9 +27,10 @@ class PolyWidgetEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        MapCamera camera = MapCamera.of(context);
         return PolyWidgetEditorProvider(
           controller: controller,
-          camera: MapCamera.of(context),
+          camera: camera,
           onMove: onMove,
           constraints: constraints,
           minCenterSize: minCenterSize,
@@ -49,6 +50,7 @@ class PolyWidgetEditor extends StatelessWidget {
                   onChanged: (size) {
                     controller.updateUnprojectedSize(
                       context,
+                      camera,
                       constraints,
                       size,
                     );

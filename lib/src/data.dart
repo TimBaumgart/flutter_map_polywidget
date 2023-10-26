@@ -15,25 +15,29 @@ class PolyWidgetData {
     required this.angle,
   });
 
-  PolyWidgetScreenData convert(
+  PolyWidgetScreenData convertForMobileLayer(
     BuildContext context,
     Orientation? forceOrientation,
     bool noRotation,
   ) {
     final mapCamera = MapCamera.of(context);
-    return convertFromCamera(mapCamera, forceOrientation, noRotation);
+    return convert(context, mapCamera, forceOrientation, noRotation, true);
   }
 
-  PolyWidgetScreenData convertFromCamera(
+  PolyWidgetScreenData convert(
+    BuildContext context,
     MapCamera mapCamera,
     Orientation? forceOrientation,
     bool noRotation,
+    bool mobileLayer,
   ) {
-    Offset centerOffset = mapCamera.getOffsetFromOrigin(center);
-    double width =
-        _calcLength(mapCamera, center, centerOffset, widthInMeters, 90);
-    double height =
-        _calcLength(mapCamera, center, centerOffset, heightInMeters, 180);
+    Offset centerOffset = mobileLayer
+        ? mapCamera.getOffsetFromOrigin(center)
+        : mapCamera.latLngToScreenPoint(center).toOffset();
+    double width = _calcLength(
+        mapCamera, mobileLayer, center, centerOffset, widthInMeters, 90);
+    double height = _calcLength(
+        mapCamera, mobileLayer, center, centerOffset, heightInMeters, 180);
 
     int turns = _calcTurns(width, height, mapCamera.rotation + angle,
         forceOrientation, noRotation);
@@ -59,13 +63,16 @@ class PolyWidgetData {
   /// calculates the current screen distance for [lengthInMeters]
   double _calcLength(
     MapCamera mapCamera,
+    bool mobileLayer,
     LatLng center,
     Offset centerOffset,
     int lengthInMeters,
     int angle,
   ) {
     LatLng latLng = const Distance().offset(center, lengthInMeters, angle);
-    Offset offset = mapCamera.getOffsetFromOrigin(latLng);
+    Offset offset = mobileLayer
+        ? mapCamera.getOffsetFromOrigin(latLng)
+        : mapCamera.latLngToScreenPoint(latLng).toOffset();
     double width =
         Offset(offset.dx - centerOffset.dx, offset.dy - centerOffset.dy)
             .distance;
@@ -196,8 +203,7 @@ class PolyWidgetScreenData {
       height.hashCode ^
       rotation.hashCode;
 
-  PolyWidgetData convert(BuildContext context) {
-    MapCamera camera = MapCamera.of(context);
+  PolyWidgetData convert(BuildContext context, MapCamera camera) {
     LatLng topLeft = camera.offsetToCrs(Offset(left, top));
     LatLng topRight = camera.offsetToCrs(Offset(left + width, top));
     LatLng bottomLeft = camera.offsetToCrs(Offset(left, top + height));
