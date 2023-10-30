@@ -2,6 +2,7 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_polywidget/flutter_map_polywidget.dart';
+import 'package:latlong2/latlong.dart';
 
 class PolyWidgetEditorProvider extends StatefulWidget {
   final PolyWidgetEditorController controller;
@@ -29,7 +30,7 @@ class PolyWidgetEditorProvider extends StatefulWidget {
 
 class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
   bool active = false;
-  bool activationMovementFinished = false;
+  bool moveOnCameraChange = true;
   EdgeInsets size = EdgeInsets.zero;
   CancelableOperation<void>? cameraFuture;
 
@@ -64,7 +65,7 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
     var updateOnZoom = camera.zoom != oldWidget.camera.zoom &&
         widget.zoomMode.updateSizeOnZoom();
     var updateOnActivationMovement =
-        !activationMovementFinished && camera != oldWidget.camera;
+        moveOnCameraChange && camera != oldWidget.camera;
     if (updateOnZoom || updateOnActivationMovement) {
       _updateSize();
     }
@@ -76,6 +77,10 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
       ).then((value) {
         if (!widget.controller.active) {
           return;
+        }
+
+        if (widget.zoomMode == EditorZoomMode.real && _sizeRatioUnequal) {
+          _moveToCenter();
         }
 
         widget.controller.updateOutputData(
@@ -120,9 +125,9 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
           return widget.builder.call(
             context,
             size,
-            activationMovementFinished
-                ? null
-                : widget.controller.data?.calcRotationDiff(widget.camera),
+            moveOnCameraChange
+                ? widget.controller.data?.calcRotationDiff(widget.camera)
+                : null,
           );
         },
       ),
@@ -165,13 +170,30 @@ class _PolyWidgetEditorProviderState extends State<PolyWidgetEditorProvider> {
         await _onActivate(
           camera,
         );
-        activationMovementFinished = true;
+        moveOnCameraChange = false;
       } else {
-        activationMovementFinished = false;
+        moveOnCameraChange = true;
       }
       setState(() {
         active = widget.controller.active;
       });
+    }
+  }
+
+  bool get _sizeRatioUnequal {
+    double verticalRatio = size.top / size.bottom;
+    if (verticalRatio > 1.1 || verticalRatio < (1 / 1.1)) return true;
+    double horizontalRatio = size.left / size.right;
+    if (horizontalRatio > 1.1 || horizontalRatio < (1 / 1.1)) return true;
+    return false;
+  }
+
+  void _moveToCenter() async {
+    LatLng? dataCenter = widget.controller.data?.center;
+    if (dataCenter != null) {
+      moveOnCameraChange = true;
+      await widget.onMove?.call(widget.camera.withPosition(center: dataCenter));
+      moveOnCameraChange = false;
     }
   }
 }

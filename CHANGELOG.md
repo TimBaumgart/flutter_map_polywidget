@@ -46,6 +46,14 @@
 * allow all widgets to be placed inside `PolyWidgetLayer`. This allows the use of Selectors to build
   PolyWidgets for example.
 
-## 1.1.0-dev.1
+## 1.1.0-dev.1 - 1.1.0-dev.3
 
 * add polywidget editor (wip)
+
+### roadmap
+
+* documentation missing
+* example missing
+* move unprojected center widget by drag&drop
+* show height/length when resizing editor
+* add corner buttons to resize width and height at once
