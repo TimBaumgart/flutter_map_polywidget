@@ -12,6 +12,8 @@ class UnprojectedEditor extends StatelessWidget {
   final Size minCenterSize;
   final Widget? centerChild;
   final double? rotation;
+  final bool resizeable;
+  final bool rotateable;
 
   const UnprojectedEditor({
     super.key,
@@ -21,7 +23,10 @@ class UnprojectedEditor extends StatelessWidget {
     required this.builder,
     required this.rotation,
     this.centerChild,
-  });
+    bool? resizeable,
+    bool? rotateable,
+  })  : this.resizeable = resizeable ?? true,
+        this.rotateable = rotateable ?? true;
 
   @override
   Widget build(BuildContext context) {
@@ -47,20 +52,21 @@ class UnprojectedEditor extends StatelessWidget {
                       color: Colors.black.withOpacity(0.5),
                       child: Stack(
                         children: [
-                          Positioned(
-                            top: state.size.top,
-                            left: state.size.left,
-                            width:
-                                state.parentSize.width - state.size.horizontal,
-                            height:
-                                state.parentSize.height - state.size.vertical,
-                            child: _Rotated(
-                              rotation: rotation,
-                              child: const ColoredBox(
-                                color: Colors.black,
+                          if (resizeable)
+                            Positioned(
+                              top: state.size.top,
+                              left: state.size.left,
+                              width: state.parentSize.width -
+                                  state.size.horizontal,
+                              height:
+                                  state.parentSize.height - state.size.vertical,
+                              child: _Rotated(
+                                rotation: rotation,
+                                child: const ColoredBox(
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -73,15 +79,33 @@ class UnprojectedEditor extends StatelessWidget {
                   left: state.size.left,
                   bottom: state.size.bottom,
                   right: state.size.right,
-                  child: _Rotated(
-                    rotation: rotation,
-                    child: centerChild!,
-                  ),
+                  child: rotateable
+                      ? _Rotated(
+                          rotation: rotation,
+                          child: centerChild!,
+                        )
+                      : centerChild!,
                 ),
-              LeftHorizontalResizeLineData().build(context),
-              RightHorizontalResizeLineData().build(context),
-              TopVerticalResizeLineData().build(context),
-              BottomVerticalResizeLineData().build(context),
+              // if (resizeable ?? true) ...{
+              //   Positioned(
+              //     top: state.size.top,
+              //     left: state.size.left,
+              //     bottom: state.size.bottom,
+              //     right: state.size.right,
+              //     child: _Rotated(
+              //       rotation: rotation,
+              //       child: centerChild!,
+              //     ),
+              //   ),
+              // } else ...{
+              //   Center(child: centerChild),
+              // },
+              if (resizeable) ...{
+                LeftHorizontalResizeLineData().build(context),
+                RightHorizontalResizeLineData().build(context),
+                TopVerticalResizeLineData().build(context),
+                BottomVerticalResizeLineData().build(context),
+              },
               if (builder != null)
                 Positioned.fill(
                   child: builder!.call(context, state.size),

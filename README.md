@@ -37,7 +37,7 @@ Add `flutter_map_polywidget` to your `pubspec.yaml`:
 
 ```
 dependencies:
-  flutter_map_polywidget: any # or latest verion
+  flutter_map_polywidget: any # or latest version
 ```
 
 ## Usage

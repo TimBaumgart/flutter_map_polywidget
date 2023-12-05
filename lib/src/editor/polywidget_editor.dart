@@ -11,6 +11,8 @@ class PolyWidgetEditor extends StatelessWidget {
   final Size minCenterSize;
   final EditorZoomMode? zoomMode;
   final MoveCallback? onMove;
+  final bool? resizeable;
+  final bool? rotateable;
 
   PolyWidgetEditor({
     super.key,
@@ -20,6 +22,8 @@ class PolyWidgetEditor extends StatelessWidget {
     Size? minCenterSize,
     this.zoomMode,
     this.onMove,
+    this.resizeable,
+    this.rotateable,
   })  : controller = controller ?? PolyWidgetEditorController(),
         minCenterSize = minCenterSize ?? Size.zero;
 
@@ -55,6 +59,8 @@ class PolyWidgetEditor extends StatelessWidget {
                   },
                   builder: builder,
                   centerChild: centerChild,
+                  resizeable: resizeable,
+                  rotateable: rotateable,
                 ),
               ),
             );

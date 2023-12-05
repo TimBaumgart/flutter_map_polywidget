@@ -15,6 +15,8 @@ class PolyWidgetEditorLayer extends StatelessWidget {
   final Widget? centerChild;
   final Size? minCenterSize;
   final EditorZoomMode? zoomMode;
+  final bool? resizeable;
+  final bool? rotateable;
 
   const PolyWidgetEditorLayer({
     super.key,
@@ -25,6 +27,8 @@ class PolyWidgetEditorLayer extends StatelessWidget {
     this.centerChild,
     this.minCenterSize,
     this.zoomMode,
+    this.resizeable,
+    this.rotateable,
   });
 
   @override
@@ -41,6 +45,8 @@ class PolyWidgetEditorLayer extends StatelessWidget {
           onMove: onMove,
           zoomMode: zoomMode,
           minCenterSize: minCenterSize,
+          resizeable: resizeable,
+          rotateable: rotateable,
         ),
       ],
     );
