@@ -74,18 +74,25 @@ class UnprojectedEditor extends StatelessWidget {
                 ),
               ),
               if (centerChild != null)
-                Positioned(
-                  top: state.size.top,
-                  left: state.size.left,
-                  bottom: state.size.bottom,
-                  right: state.size.right,
-                  child: rotateable
-                      ? _Rotated(
-                          rotation: rotation,
-                          child: centerChild!,
-                        )
-                      : centerChild!,
-                ),
+                if (!resizeable)
+                  Positioned(
+                    top: state.size.top - 32,
+                    left: state.size.left - 32,
+                    bottom: state.size.bottom - 32,
+                    right: state.size.right - 32,
+                    child: centerChild!,
+                  )
+                else
+                  Positioned(
+                    top: state.size.top,
+                    left: state.size.left,
+                    bottom: state.size.bottom,
+                    right: state.size.right,
+                    child: _Rotated(
+                      rotation: rotation,
+                      child: centerChild!,
+                    ),
+                  ),
               // if (resizeable ?? true) ...{
               //   Positioned(
               //     top: state.size.top,
