@@ -7,13 +7,22 @@ import 'package:latlong2/latlong.dart';
 double buttonSize = 44;
 
 class RotationDraggable extends StatefulWidget {
+  const RotationDraggable({super.key});
+
   @override
   State<RotationDraggable> createState() => _RotationDraggableState();
 }
 
 class _RotationDraggableState extends State<RotationDraggable> {
-  GlobalKey _draggableKey = GlobalKey();
+  late GlobalKey _draggableKey;
+
   bool _dragging = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _draggableKey = GlobalKey();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,15 +73,15 @@ class _RotationDraggableState extends State<RotationDraggable> {
                 _onDragUpdate(context, details);
               },
               data: "nothing",
-              child: MouseRegion(
-                cursor: SystemMouseCursors.grab,
-                child: _Compass(dragging: false),
-              ),
-              childWhenDragging: MouseRegion(
+              childWhenDragging: const MouseRegion(
                 cursor: SystemMouseCursors.grabbing,
                 child: _Compass(
                   dragging: true,
                 ),
+              ),
+              child: const MouseRegion(
+                cursor: SystemMouseCursors.grab,
+                child: _Compass(dragging: false),
               ),
             ),
           ),
@@ -111,9 +120,9 @@ class _RotationDraggableState extends State<RotationDraggable> {
 }
 
 class _Compass extends StatelessWidget {
-  bool dragging;
+  final bool dragging;
 
-  _Compass({
+  const _Compass({
     required this.dragging,
   });
 
@@ -137,7 +146,7 @@ class _Compass extends StatelessWidget {
               color: Theme.of(context).colorScheme.onBackground,
             ),
             Transform.translate(
-              offset: Offset(0, -4),
+              offset: const Offset(0, -4),
               child: Transform.rotate(
                 angle: -degToRadian(MapCamera.of(context).rotation),
                 child: Text(

@@ -26,8 +26,8 @@ class UnprojectedEditor extends StatelessWidget {
     this.centerChild,
     bool? resizeable,
     bool? rotateable,
-  })  : this.resizeable = resizeable ?? true,
-        this.rotateable = rotateable ?? true;
+  })  : resizeable = resizeable ?? true,
+        rotateable = rotateable ?? true;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class UnprojectedEditor extends StatelessWidget {
                 BottomVerticalResizeLineData().build(context),
               },
               if (rotateable) ...{
-                RotationDraggable(),
+                const RotationDraggable(),
               },
               if (builder != null)
                 Positioned.fill(
