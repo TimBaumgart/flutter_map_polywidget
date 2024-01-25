@@ -18,6 +18,9 @@ class UnprojectedEditorState extends InheritedWidget {
     required super.child,
   });
 
+  Offset get parentCenter =>
+      Offset(parentSize.width / 2, parentSize.height / 2);
+
   @override
   bool updateShouldNotify(covariant UnprojectedEditorState oldWidget) {
     return parentSize != oldWidget.parentSize || size != oldWidget.size;

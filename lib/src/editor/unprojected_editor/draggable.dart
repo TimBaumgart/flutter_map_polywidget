@@ -4,6 +4,7 @@ class MyDraggable<T extends Object> extends StatefulWidget {
   final T? data;
   final Widget child;
   final Widget feedback;
+  final VoidCallback? onDragStarted;
   final DragEndCallback? onDragEnd;
   final DragUpdateCallback? onDragUpdate;
   final Widget? childWhenDragging;
@@ -14,6 +15,7 @@ class MyDraggable<T extends Object> extends StatefulWidget {
     this.data,
     required this.child,
     required this.feedback,
+    this.onDragStarted,
     this.onDragEnd,
     this.onDragUpdate,
     this.childWhenDragging,
@@ -32,6 +34,7 @@ class _MyDraggableState extends State<MyDraggable> {
     return LongPressAndDefaultDraggable(
       data: widget.data,
       feedback: widget.feedback,
+      onDragStarted: widget.onDragStarted,
       onDragEnd: widget.onDragEnd,
       onDragUpdate: (details) {
         widget.onDragUpdate?.call(
@@ -56,6 +59,7 @@ class LongPressAndDefaultDraggable<T extends Object> extends StatelessWidget {
   final T? data;
   final Widget child;
   final Widget feedback;
+  final VoidCallback? onDragStarted;
   final DragEndCallback? onDragEnd;
   final DragUpdateCallback? onDragUpdate;
   final Widget? childWhenDragging;
@@ -66,6 +70,7 @@ class LongPressAndDefaultDraggable<T extends Object> extends StatelessWidget {
     this.data,
     required this.child,
     required this.feedback,
+    this.onDragStarted,
     this.onDragEnd,
     this.onDragUpdate,
     this.childWhenDragging,
@@ -77,6 +82,7 @@ class LongPressAndDefaultDraggable<T extends Object> extends StatelessWidget {
     return LongPressDraggable<T>(
       data: data,
       feedback: feedback,
+      onDragStarted: onDragStarted,
       onDragEnd: onDragEnd,
       onDragUpdate: onDragUpdate,
       childWhenDragging: childWhenDragging,
@@ -84,6 +90,7 @@ class LongPressAndDefaultDraggable<T extends Object> extends StatelessWidget {
       child: Draggable(
         data: data,
         feedback: feedback,
+        onDragStarted: onDragStarted,
         onDragEnd: onDragEnd,
         onDragUpdate: onDragUpdate,
         childWhenDragging: childWhenDragging,

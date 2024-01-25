@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map_polywidget/flutter_map_polywidget.dart';
 import 'package:flutter_map_polywidget/src/editor/unprojected_editor/provider.dart';
 import 'package:flutter_map_polywidget/src/editor/unprojected_editor/resize_line.dart';
+import 'package:flutter_map_polywidget/src/editor/unprojected_editor/rotation_draggable.dart';
 import 'package:flutter_map_polywidget/src/editor/unprojected_editor/state.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -112,6 +113,9 @@ class UnprojectedEditor extends StatelessWidget {
                 RightHorizontalResizeLineData().build(context),
                 TopVerticalResizeLineData().build(context),
                 BottomVerticalResizeLineData().build(context),
+              },
+              if (rotateable) ...{
+                RotationDraggable(),
               },
               if (builder != null)
                 Positioned.fill(
