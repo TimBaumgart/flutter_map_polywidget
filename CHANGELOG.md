@@ -51,6 +51,10 @@
 * add polywidget editor (wip)
 * update flutter_map to 6.1.0
 
+## 1.1.0-dev.7
+
+* update flutter_map to 7.0.0
+
 ### roadmap
 
 * documentation missing
