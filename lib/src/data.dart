@@ -38,7 +38,7 @@ class PolyWidgetData {
   }) {
     Offset centerOffset = mobileLayer
         ? mapCamera.getOffsetFromOrigin(center)
-        : mapCamera.latLngToScreenPoint(center).toOffset();
+        : mapCamera.latLngToScreenOffset(center);
     double width = _calcLength(
         mapCamera, mobileLayer, center, centerOffset, widthInMeters, 90);
     double height = _calcLength(
@@ -77,7 +77,7 @@ class PolyWidgetData {
     LatLng latLng = const Distance().offset(center, lengthInMeters, angle);
     Offset offset = mobileLayer
         ? mapCamera.getOffsetFromOrigin(latLng)
-        : mapCamera.latLngToScreenPoint(latLng).toOffset();
+        : mapCamera.latLngToScreenOffset(latLng);
     double width =
         Offset(offset.dx - centerOffset.dx, offset.dy - centerOffset.dy)
             .distance;
